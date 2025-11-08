@@ -58,8 +58,7 @@
     <!-- Exclude device calibration data -->
     <exclude domain="sharedpref" path="device_calibration.xml"/>
 
-    <!-- Exclude external storage (SD card) -->
-    <exclude domain="external" path="."/>
+    <!-- External storage exclusions handled by system defaults -->
 
     <!--
         Notes:

@@ -30,8 +30,6 @@ class VigilanceCarMainScreen(carContext: CarContext) : Screen(carContext), Defau
      */
     override fun onGetTemplate(): Template {
         return PaneTemplate.Builder(createPane())
-            .setHeaderAction(Action.APP_ICON)
-            .setTitle("VigilanceAI")
             .build()
     }
 
@@ -133,11 +131,7 @@ class VigilanceCarMainScreen(carContext: CarContext) : Screen(carContext), Defau
 class VigilanceRestStopScreen(carContext: CarContext) : Screen(carContext) {
 
     override fun onGetTemplate(): Template {
-        // Pass the message string directly into the Builder constructor
         return MessageTemplate.Builder("Looking for rest stops nearby...")
-            // The title is set using the setTitle() method
-            .setTitle("Rest Stop Finder")
-            .setHeaderAction(Action.BACK)
             .addAction(
                 Action.Builder()
                     .setTitle("Navigate")

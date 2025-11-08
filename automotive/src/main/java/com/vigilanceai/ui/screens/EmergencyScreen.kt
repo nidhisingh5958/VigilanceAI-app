@@ -2,6 +2,8 @@ package com.vigilanceai.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -27,6 +29,7 @@ fun EmergencyScreen(viewModel: VigilanceViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .background(Gray950)
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = 48.dp)
     ) {
         Spacer(modifier = Modifier.height(32.dp))

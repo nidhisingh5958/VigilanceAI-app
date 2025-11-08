@@ -3,6 +3,8 @@ package com.vigilanceai.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,6 +31,7 @@ fun DashboardScreen(viewModel: VigilanceViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .background(Gray950)
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = 48.dp)
     ) {
         Spacer(modifier = Modifier.height(32.dp))
@@ -157,6 +160,32 @@ fun DashboardScreen(viewModel: VigilanceViewModel) {
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Test Controls
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Button(
+                onClick = { viewModel.simulateAccident() },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(containerColor = Red)
+            ) {
+                Text("Test Emergency")
+            }
+            
+            Button(
+                onClick = { viewModel.startAIConversation("FATIGUE") },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(containerColor = Cyan)
+            ) {
+                Text("Test AI Chat")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 

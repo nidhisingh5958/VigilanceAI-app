@@ -20,6 +20,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "VigilanceAI"
-include(":mobile")
 include(":automotive")
-include(":shared")

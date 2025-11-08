@@ -124,4 +124,27 @@ fun NavGraph(
         // Bottom Bar
         BottomBar()
     }
+
+    // Overlay Screens
+    val emergencyState by viewModel.emergencyActivation.collectAsState()
+    val aiConversationState by viewModel.aiConversationState.collectAsState()
+
+    // Emergency Activation Overlay
+    if (emergencyState.isTriggered) {
+        EmergencyActivationScreen(
+            emergencyData = emergencyState,
+            onCancelEmergency = { viewModel.cancelEmergency() },
+            onConfirmEmergency = { /* Confirm emergency action */ }
+        )
+    }
+
+    // AI Conversation Overlay
+    if (aiConversationState.isActive) {
+        AIConversationScreen(
+            conversationState = aiConversationState,
+            onStartListening = { viewModel.startListening() },
+            onStopListening = { viewModel.stopListening() },
+            onDismiss = { viewModel.dismissAIConversation() }
+        )
+    }
 }

@@ -5,6 +5,8 @@ data class DriverMetrics(
     val alertness: Int = 98,
     val stress: String = "Low",
     val fatigue: Int = 12,
+    val isDrowsy: Boolean = false,
+    val accidentDetected: Boolean = false,
     val perclos: Double = 4.2,
     val heartRate: Int = 72,
     val emotionState: String = "Calm & Focused",
@@ -34,4 +36,27 @@ data class CoPilotSuggestion(
 data class InteractionHistory(
     val time: String,
     val message: String
+)
+
+data class EmergencyActivation(
+    val isTriggered: Boolean = false,
+    val triggerType: String = "", // "ACCIDENT", "MEDICAL", "MANUAL"
+    val location: String = "",
+    val timestamp: String = "",
+    val emergencyContacted: Boolean = false,
+    val responseTime: String = ""
+)
+
+data class AIConversationState(
+    val isActive: Boolean = false,
+    val triggerReason: String = "", // "FATIGUE", "DROWSINESS", "STRESS"
+    val isListening: Boolean = false,
+    val currentMessage: String = "",
+    val conversationHistory: List<ConversationMessage> = emptyList()
+)
+
+data class ConversationMessage(
+    val sender: String, // "AI" or "USER"
+    val message: String,
+    val timestamp: String
 )

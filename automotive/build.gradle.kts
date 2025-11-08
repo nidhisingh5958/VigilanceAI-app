@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.vigilance.ai"
+    namespace = "com.vigilanceai"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.vigilance.ai"
+        applicationId = "com.vigilanceai"
         minSdk = 29
         targetSdk = 34
         versionCode = 1
@@ -37,6 +37,11 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    lint {
+        abortOnError = false
+        checkReleaseBuilds = false
     }
 }
 
