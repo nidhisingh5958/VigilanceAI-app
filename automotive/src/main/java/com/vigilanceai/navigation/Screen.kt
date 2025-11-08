@@ -52,3 +52,4 @@ fun Screen.displayName(): String {
         is Screen.CoPilot -> "AI Co-Pilot"
     }
 }
+
