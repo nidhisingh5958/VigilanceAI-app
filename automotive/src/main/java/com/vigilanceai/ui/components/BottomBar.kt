@@ -1,4 +1,4 @@
-package com.example.vigilanceai.ui.components
+package com.vigilanceai.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.vigilanceai.ui.theme.*
+import com.vigilanceai.ui.theme.*
 
 @Composable
 fun BottomBar(

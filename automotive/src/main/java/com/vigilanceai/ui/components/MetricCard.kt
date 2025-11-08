@@ -1,4 +1,4 @@
-package com.example.vigilanceai.ui.components
+package com.vigilanceai.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import com.example.vigilanceai.ui.theme.*
+import com.vigilanceai.ui.theme.*
 
 /**
  * MetricCard.kt

@@ -1,4 +1,4 @@
-package com.example.vigilanceai.ui.components
+package com.vigilanceai.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.vigilanceai.ui.theme.*
+import com.vigilanceai.ui.theme.*
 import java.text.SimpleDateFormat
 import java.util.*
 

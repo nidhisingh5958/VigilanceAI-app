@@ -1,8 +1,8 @@
-package com.example.vigilanceai.viewmodel
+package com.vigilanceai.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vigilanceai.data.*
+import com.vigilanceai.data.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

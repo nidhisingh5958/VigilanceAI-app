@@ -1,4 +1,4 @@
-package com.example.vigilanceai.data
+package com.vigilanceai.data
 
 data class DriverMetrics(
     val wellnessScore: Int = 94,

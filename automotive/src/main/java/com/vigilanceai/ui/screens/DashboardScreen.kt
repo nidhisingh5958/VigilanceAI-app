@@ -1,4 +1,4 @@
-package com.example.vigilanceai.ui.screens
+package com.vigilanceai.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,8 +18,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.vigilanceai.ui.theme.*
-import com.example.vigilanceai.viewmodel.VigilanceViewModel
+import com.vigilanceai.ui.theme.*
+import com.vigilanceai.viewmodel.VigilanceViewModel
 
 @Composable
 fun DashboardScreen(viewModel: VigilanceViewModel) {

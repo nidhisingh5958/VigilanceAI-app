@@ -1,4 +1,4 @@
-package com.example.vigilanceai.ui.theme
+package com.vigilanceai.ui.theme
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable

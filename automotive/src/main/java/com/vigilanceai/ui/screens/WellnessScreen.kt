@@ -1,4 +1,4 @@
-package com.example.vigilanceai.ui.screens
+package com.vigilanceai.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,10 +16,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.vigilanceai.ui.components.DetailedMetricCard
-import com.example.vigilanceai.ui.components.DrivingMetric
-import com.example.vigilanceai.ui.theme.*
-import com.example.vigilanceai.viewmodel.VigilanceViewModel
+import com.vigilanceai.ui.components.DetailedMetricCard
+import com.vigilanceai.ui.components.DrivingMetric
+import com.vigilanceai.ui.theme.*
+import com.vigilanceai.viewmodel.VigilanceViewModel
 
 /**
  * Wellness Monitor Screen

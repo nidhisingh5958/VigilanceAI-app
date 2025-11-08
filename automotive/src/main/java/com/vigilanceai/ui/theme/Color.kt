@@ -1,4 +1,4 @@
-package com.example.vigilanceai.ui.theme
+package com.vigilanceai.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,4 +1,4 @@
-package com.example.vigilanceai
+package com.vigilanceai
 
 import org.junit.Test
 

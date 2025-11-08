@@ -1,4 +1,4 @@
-package com.example.vigilanceai.navigation
+package com.vigilanceai.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,11 +11,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.vigilanceai.ui.components.BottomBar
-import com.example.vigilanceai.ui.components.TopBar
-import com.example.vigilanceai.ui.screens.*
-import com.example.vigilanceai.ui.theme.*
-import com.example.vigilanceai.viewmodel.VigilanceViewModel
+import com.vigilanceai.ui.components.BottomBar
+import com.vigilanceai.ui.components.TopBar
+import com.vigilanceai.ui.screens.*
+import com.vigilanceai.ui.theme.*
+import com.vigilanceai.viewmodel.VigilanceViewModel
 
 /**
  * SAFE MINIMAL VERSION - Guaranteed to work

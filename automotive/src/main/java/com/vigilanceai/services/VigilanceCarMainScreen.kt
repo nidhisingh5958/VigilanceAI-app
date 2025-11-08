@@ -1,4 +1,4 @@
-package com.example.vigilanceai.services
+package com.vigilanceai.services
 
 import androidx.car.app.CarContext
 import androidx.car.app.Screen

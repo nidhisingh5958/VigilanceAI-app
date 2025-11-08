@@ -1,4 +1,4 @@
-package com.example.vigilanceai.services
+package com.vigilanceai.services
 
 import android.content.Intent
 import androidx.car.app.CarAppService

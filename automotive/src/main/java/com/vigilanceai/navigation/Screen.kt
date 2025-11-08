@@ -1,4 +1,4 @@
-package com.example.vigilanceai.navigation
+package com.vigilanceai.navigation
 
 /**
  * Sealed class defining all navigation routes in the app
