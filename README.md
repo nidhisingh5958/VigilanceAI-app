@@ -141,19 +141,7 @@ Testing
 - `automotive/` — app modules and Gradle configuration for Android Automotive/Car App.
 - `build.gradle.kts`, `settings.gradle.kts` — top-level Gradle config.
 
-## License
 
-This project does not include a license file in this commit. Add a LICENSE to state how you want this code used (e.g., Apache-2.0, MIT). If you want, I can add a suggested license file.
 
-## Contact / further reading
 
-For questions or design discussions, open an issue or PR. For architecture design reviews, maintainers should document safety validation and regulatory compliance checks separately.
-
----
-
-If you want, I can also:
-- Add a visual PNG architecture diagram into `docs/` and reference it here.
-- Add a minimal developer checklist and run scripts for CI.
-
-Change log: Rewrote README to give a full project overview and architecture details.
 
