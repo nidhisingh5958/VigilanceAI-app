@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vigilanceai.ui.theme.*
 import com.vigilanceai.viewmodel.VigilanceViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun CoPilotScreen(viewModel: VigilanceViewModel) {
@@ -215,11 +217,28 @@ fun CoPilotScreen(viewModel: VigilanceViewModel) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    interactions.forEach { interaction ->
-                        InteractionItem(
-                            time = interaction.time,
-                            message = interaction.message
-                        )
+                    // Show AI conversation messages if available
+                    val conversationMessages by viewModel.conversationMessages.collectAsState()
+                    val aiConversationState by viewModel.aiConversationState.collectAsState()
+                    
+                    if (conversationMessages.isNotEmpty()) {
+                        // AIMessage uses a Long timestamp and stores text/isAI
+                        conversationMessages.takeLast(3).forEach { message ->
+                            val timeStr = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(message.timestamp))
+                            val senderLabel = if (message.isAI) "AI" else "You"
+                            InteractionItem(
+                                time = timeStr,
+                                message = "$senderLabel: ${message.text}"
+                            )
+                        }
+                    } else {
+                        // Fallback to regular interactions
+                        interactions.takeLast(3).forEach { interaction ->
+                            InteractionItem(
+                                time = interaction.time,
+                                message = interaction.message
+                            )
+                        }
                     }
                 }
             }

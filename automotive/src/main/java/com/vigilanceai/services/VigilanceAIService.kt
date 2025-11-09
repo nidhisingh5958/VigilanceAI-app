@@ -191,10 +191,11 @@ class VigilanceAIService : Service(), TextToSpeech.OnInitListener {
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e(TAG, "TTS language not supported")
             } else {
-                textToSpeech.setPitch(1.0f)
-                textToSpeech.setSpeechRate(0.9f)
+                // Male voice settings - deeper pitch, slightly slower
+                textToSpeech.setPitch(0.85f)  // Lower pitch for male voice
+                textToSpeech.setSpeechRate(0.95f)  // Slightly slower for clarity
                 isTTSReady = true
-                Log.d(TAG, "TTS initialized successfully")
+                Log.d(TAG, "TTS initialized successfully with male voice")
             }
         } else {
             Log.e(TAG, "TTS initialization failed")
@@ -400,14 +401,7 @@ class VigilanceAIService : Service(), TextToSpeech.OnInitListener {
     }
 }
 
-// Data classes
-data class AIMessage(
-    val text: String,
-    val isAI: Boolean,
-    val timestamp: Long,
-    val isEmergency: Boolean = false
-)
-
+// AIState is defined here for use by the service/viewmodel
 enum class AIState {
     IDLE,       // Ready to listen
     LISTENING,  // Actively listening to user
