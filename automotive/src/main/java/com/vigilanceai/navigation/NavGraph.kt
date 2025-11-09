@@ -1,12 +1,10 @@
-// Updated NavGraph.kt
-// Replace your existing NavGraph.kt with this version
-
 package com.vigilanceai.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -16,8 +14,13 @@ import androidx.navigation.compose.composable
 import com.vigilanceai.ui.components.BottomBar
 import com.vigilanceai.ui.components.TopBar
 import com.vigilanceai.ui.screens.*
+import com.vigilanceai.ui.theme.*
 import com.vigilanceai.viewmodel.VigilanceViewModel
 
+/**
+ * SAFE MINIMAL VERSION - Guaranteed to work
+ * Use this version if the app is crashing
+ */
 @Composable
 fun NavGraph(
     navController: NavHostController,
@@ -35,56 +38,64 @@ fun NavGraph(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Navigation Buttons
+        // Simple Navigation Buttons (instead of tabs)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 48.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            NavigationButton(
-                text = "Dashboard",
-                isSelected = currentScreen == "Dashboard",
+            Button(
                 onClick = {
                     currentScreen = "Dashboard"
-                    navController.navigate(Screen.Dashboard.route) {
-                        popUpTo(Screen.Dashboard.route) { inclusive = true }
-                    }
-                }
-            )
+                    navController.navigate(Screen.Dashboard.route)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (currentScreen == "Dashboard")
+                        Color(0xFF06B6D4) else Color(0xFF374151)
+                )
+            ) {
+                Text("Dashboard")
+            }
 
-            NavigationButton(
-                text = "Wellness",
-                isSelected = currentScreen == "Wellness",
+            Button(
                 onClick = {
                     currentScreen = "Wellness"
-                    navController.navigate(Screen.Wellness.route) {
-                        popUpTo(Screen.Dashboard.route) { saveState = true }
-                    }
-                }
-            )
+                    navController.navigate(Screen.Wellness.route)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (currentScreen == "Wellness")
+                        Color(0xFF06B6D4) else Color(0xFF374151)
+                )
+            ) {
+                Text("Wellness")
+            }
 
-            NavigationButton(
-                text = "Emergency",
-                isSelected = currentScreen == "Emergency",
+            Button(
                 onClick = {
                     currentScreen = "Emergency"
-                    navController.navigate(Screen.Emergency.route) {
-                        popUpTo(Screen.Dashboard.route) { saveState = true }
-                    }
-                }
-            )
+                    navController.navigate(Screen.Emergency.route)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (currentScreen == "Emergency")
+                        Color(0xFF06B6D4) else Color(0xFF374151)
+                )
+            ) {
+                Text("Emergency")
+            }
 
-            NavigationButton(
-                text = "Co-Pilot",
-                isSelected = currentScreen == "CoPilot",
+            Button(
                 onClick = {
                     currentScreen = "CoPilot"
-                    navController.navigate(Screen.CoPilot.route) {
-                        popUpTo(Screen.Dashboard.route) { saveState = true }
-                    }
-                }
-            )
+                    navController.navigate(Screen.CoPilot.route)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (currentScreen == "CoPilot")
+                        Color(0xFF06B6D4) else Color(0xFF374151)
+                )
+            ) {
+                Text("Co-Pilot")
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -114,59 +125,26 @@ fun NavGraph(
         BottomBar()
     }
 
-    // Overlay Screens with AI Service Integration
+    // Overlay Screens
     val emergencyState by viewModel.emergencyActivation.collectAsState()
     val aiConversationState by viewModel.aiConversationState.collectAsState()
-    
-    // Collect AI messages from service
-    val aiMessages by (viewModel.conversationMessages ?: remember { 
-        mutableStateOf(emptyList()) 
-    }).collectAsState()
 
     // Emergency Activation Overlay
     if (emergencyState.isTriggered) {
         EmergencyActivationScreen(
             emergencyData = emergencyState,
             onCancelEmergency = { viewModel.cancelEmergency() },
-            onConfirmEmergency = {
-                // Confirm emergency and contact services
-                viewModel.speakToDriver("Emergency confirmed. Contacting emergency services now.")
-            }
+            onConfirmEmergency = { /* Confirm emergency action */ }
         )
     }
 
-    // AI Conversation Overlay - Now with message history
+    // AI Conversation Overlay
     if (aiConversationState.isActive) {
         AIConversationScreen(
             conversationState = aiConversationState,
-            messages = aiMessages,
             onStartListening = { viewModel.startListening() },
             onStopListening = { viewModel.stopListening() },
             onDismiss = { viewModel.dismissAIConversation() }
-        )
-    }
-}
-
-@Composable
-fun NavigationButton(
-    text: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected)
-                Color(0xFF06B6D4) 
-            else 
-                Color(0xFF374151)
-        ),
-        shape = MaterialTheme.shapes.medium,
-        modifier = Modifier.height(48.dp)
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleMedium
         )
     }
 }

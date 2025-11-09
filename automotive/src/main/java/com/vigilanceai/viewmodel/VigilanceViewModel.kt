@@ -1,5 +1,5 @@
-// VigilanceViewModel.kt
-// Update your existing ViewModel to integrate with VigilanceAIService
+// Safe VigilanceViewModel.kt
+// Use this if you're still having issues with the previous version
 
 package com.vigilanceai.viewmodel
 
@@ -7,7 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vigilanceai.data.AIConversationState
 import com.vigilanceai.data.EmergencyActivation
-import com.vigilanceai.data.WellnessMetrics
+import com.vigilanceai.data.DriverMetrics
+import com.vigilanceai.data.EmergencyStatus
+import com.vigilanceai.data.CoPilotSuggestion
+import com.vigilanceai.data.InteractionHistory
+import com.vigilanceai.service.AIMessage
 import com.vigilanceai.service.AIState
 import com.vigilanceai.service.VigilanceAIService
 import kotlinx.coroutines.flow.*
@@ -20,27 +24,33 @@ class VigilanceViewModel : ViewModel() {
     // Reference to AI Service (will be set from MainActivity)
     private var aiService: VigilanceAIService? = null
     
-    // Existing metrics flow
-    private val _metrics = MutableStateFlow(WellnessMetrics())
-    val metrics: StateFlow<WellnessMetrics> = _metrics.asStateFlow()
+    // Existing metrics flow (Driver-facing aggregated metrics expected by UI)
+    private val _metrics = MutableStateFlow(DriverMetrics())
+    val metrics: StateFlow<DriverMetrics> = _metrics.asStateFlow()
     
     // Existing emergency activation flow
     private val _emergencyActivation = MutableStateFlow(EmergencyActivation())
     val emergencyActivation: StateFlow<EmergencyActivation> = _emergencyActivation.asStateFlow()
+
+    // Emergency system status (detection subsystems)
+    private val _emergencyStatus = MutableStateFlow(EmergencyStatus())
+    val emergencyStatus: StateFlow<EmergencyStatus> = _emergencyStatus.asStateFlow()
     
-    // AI Conversation State - Updated to integrate with service
+    // AI Conversation State
     private val _aiConversationState = MutableStateFlow(AIConversationState())
     val aiConversationState: StateFlow<AIConversationState> = _aiConversationState.asStateFlow()
     
-    // AI Service state observers
-    val aiServiceState: StateFlow<AIState>?
-        get() = aiService?.aiState
+    // Local copy of conversation messages to avoid StateFlow issues
+    private val _conversationMessages = MutableStateFlow<List<AIMessage>>(emptyList())
+    val conversationMessages: StateFlow<List<AIMessage>> = _conversationMessages.asStateFlow()
     
-    val isAIActivated: StateFlow<Boolean>?
-        get() = aiService?.isActivated
+    // AI activation state
+    private val _isAIActivated = MutableStateFlow(false)
+    val isAIActivated: StateFlow<Boolean> = _isAIActivated.asStateFlow()
     
-    val conversationMessages: StateFlow<List<com.vigilanceai.service.AIMessage>>?
-        get() = aiService?.conversationMessages
+    // AI state
+    private val _aiState = MutableStateFlow(AIState.IDLE)
+    val aiState: StateFlow<AIState> = _aiState.asStateFlow()
     
     init {
         // Start simulated metric updates
@@ -57,6 +67,7 @@ class VigilanceViewModel : ViewModel() {
         // Observe AI state changes
         viewModelScope.launch {
             service.aiState.collect { state ->
+                _aiState.value = state
                 updateAIConversationState(state)
             }
         }
@@ -64,12 +75,45 @@ class VigilanceViewModel : ViewModel() {
         // Observe activation changes
         viewModelScope.launch {
             service.isActivated.collect { isActivated ->
+                _isAIActivated.value = isActivated
                 _aiConversationState.update { it.copy(isActive = isActivated) }
+            }
+        }
+        
+        // Observe conversation messages
+        viewModelScope.launch {
+            service.conversationMessages.collect { messages ->
+                _conversationMessages.value = messages
             }
         }
         
         // Start continuous listening for wake word
         service.startContinuousListening()
+    }
+
+    // Co-pilot suggestions and interaction history for the CoPilot UI
+    private val _currentSuggestion = MutableStateFlow(
+        CoPilotSuggestion(
+            title = "Take a Break",
+            description = "Short rest can improve alertness",
+            icon = "coffee",
+            primaryAction = "Navigate",
+            secondaryAction = "Remind me"
+        )
+    )
+    val currentSuggestion: StateFlow<CoPilotSuggestion> = _currentSuggestion.asStateFlow()
+
+    private val _interactionHistory = MutableStateFlow<List<InteractionHistory>>(emptyList())
+    val interactionHistory: StateFlow<List<InteractionHistory>> = _interactionHistory.asStateFlow()
+
+    // Helper used by UI tests to simulate an accident
+    fun simulateAccident() {
+        triggerEmergency("COLLISION", "Simulated location")
+    }
+
+    // Backwards-compatible name used in several UI screens
+    fun startAIConversation(reason: String) {
+        triggerAIConversation(reason)
     }
     
     private fun updateAIConversationState(state: AIState) {
@@ -154,34 +198,43 @@ class VigilanceViewModel : ViewModel() {
     private fun startFatigueMonitoring() {
         viewModelScope.launch {
             metrics.collect { currentMetrics ->
-                // Check PERCLOS (eye closure)
-                if (currentMetrics.perclos > 70) {
-                    triggerAIConversation(
-                        "DROWSINESS",
-                        "Critical drowsiness detected. PERCLOS at ${currentMetrics.perclos}%"
-                    )
-                } else if (currentMetrics.perclos > 50) {
-                    triggerAIConversation(
-                        "FATIGUE",
-                        "Elevated drowsiness detected. PERCLOS at ${currentMetrics.perclos}%"
-                    )
+                // Check PERCLOS (eye closure) - only trigger if not already active
+                if (!_aiConversationState.value.isActive) {
+                    when {
+                        currentMetrics.perclos > 70 -> {
+                            triggerAIConversation(
+                                "DROWSINESS",
+                                "Critical drowsiness detected. PERCLOS at ${currentMetrics.perclos}%"
+                            )
+                        }
+                        currentMetrics.perclos > 50 -> {
+                            triggerAIConversation(
+                                "FATIGUE",
+                                "Elevated drowsiness detected. PERCLOS at ${currentMetrics.perclos}%"
+                            )
+                        }
+                    }
                 }
                 
                 // Check emotion state for stress
-                if (currentMetrics.emotionState.contains("Stressed", ignoreCase = true) ||
-                    currentMetrics.emotionState.contains("Anxious", ignoreCase = true)) {
-                    triggerAIConversation(
-                        "STRESS",
-                        "High stress levels detected in facial analysis"
-                    )
+                if (!_aiConversationState.value.isActive) {
+                    if (currentMetrics.emotionState.contains("Stressed", ignoreCase = true) ||
+                        currentMetrics.emotionState.contains("Anxious", ignoreCase = true)) {
+                        triggerAIConversation(
+                            "STRESS",
+                            "High stress levels detected in facial analysis"
+                        )
+                    }
                 }
                 
                 // Check heart rate
-                if (currentMetrics.heartRate > 100) {
-                    triggerAIConversation(
-                        "STRESS",
-                        "Elevated heart rate detected: ${currentMetrics.heartRate} BPM"
-                    )
+                if (!_aiConversationState.value.isActive) {
+                    if (currentMetrics.heartRate > 100) {
+                        triggerAIConversation(
+                            "STRESS",
+                            "Elevated heart rate detected: ${currentMetrics.heartRate} BPM"
+                        )
+                    }
                 }
             }
         }
@@ -190,7 +243,7 @@ class VigilanceViewModel : ViewModel() {
     // Simulate real-time metrics (replace with actual sensor data)
     private fun startMetricSimulation() {
         viewModelScope.launch {
-            var perclosValue = 12
+            var perclosValue = 12.0
             var heartRate = 72
             var emotionIndex = 0
             val emotions = listOf(
@@ -199,25 +252,34 @@ class VigilanceViewModel : ViewModel() {
                 "Slightly Tired" to 75,
                 "Calm" to 88
             )
-            
+
             while (true) {
-                kotlinx.coroutines.delay(3000) // Update every 3 seconds
-                
+                kotlinx.coroutines.delay(5000) // Update every 5 seconds
+
                 // Simulate varying metrics
-                perclosValue = (perclosValue + (-3..3).random()).coerceIn(8, 95)
+                perclosValue = (perclosValue + (-3..3).random()).coerceIn(4.0, 90.0)
                 heartRate = (heartRate + (-2..2).random()).coerceIn(60, 120)
-                
+
                 val (emotion, confidence) = emotions[emotionIndex % emotions.size]
                 emotionIndex++
-                
-                _metrics.value = WellnessMetrics(
+
+                // Update driver-focused metrics used by the UI
+                _metrics.value = DriverMetrics(
+                    wellnessScore = (80 + (-5..5).random()),
+                    alertness = (80 + (-10..10).random()),
+                    stress = if (confidence < 80) "Elevated" else "Low",
+                    fatigue = perclosValue.toInt().coerceIn(0, 100),
+                    isDrowsy = perclosValue > 70,
+                    accidentDetected = false,
                     perclos = perclosValue,
                     heartRate = heartRate,
                     emotionState = emotion,
                     emotionConfidence = confidence,
                     laneKeeping = if (perclosValue < 30) "Stable" else "Drifting",
                     steeringInput = if (perclosValue < 40) "Smooth" else "Erratic",
-                    speedControl = "Steady"
+                    speedControl = "Steady",
+                    tripTime = "1h ${1 + (0..59).random()}m",
+                    destination = "Destination"
                 )
             }
         }
@@ -226,7 +288,7 @@ class VigilanceViewModel : ViewModel() {
     // Manual AI activation (for testing or user-initiated)
     fun activateAI() {
         aiService?.let { service ->
-            if (service.isActivated.value) {
+            if (_isAIActivated.value) {
                 // Already activated, just open conversation
                 _aiConversationState.update { it.copy(isActive = true) }
             } else {

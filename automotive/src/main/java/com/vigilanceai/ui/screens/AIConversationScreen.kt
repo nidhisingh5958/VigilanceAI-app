@@ -91,7 +91,7 @@ fun AIConversationScreen(
                         style = MaterialTheme.typography.bodyMedium,
                         color = Cyan
                     )
-                </Column>
+                }
                 
                 // Close button
                 IconButton(onClick = onDismiss) {

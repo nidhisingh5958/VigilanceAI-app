@@ -1,6 +1,3 @@
-// MainActivity.kt
-// Replace your existing MainActivity with this updated version
-
 package com.vigilanceai
 
 import android.Manifest

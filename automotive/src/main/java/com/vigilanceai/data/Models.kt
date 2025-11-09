@@ -1,4 +1,6 @@
-// In com/vigilanceai/data/Models.kt or wherever your data classes are
+package com.vigilanceai.data
+
+// Data models used across the app
 
 data class AIConversationState(
     val isActive: Boolean = false,
